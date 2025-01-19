@@ -137,8 +137,24 @@ export const getRoomId = catchAsyncErrors(async (req, res, next) => {
     return next(new ErrorHandler("Interview not found.", 404));
   }
 
+  // Get the interview date & time in a proper format
+  const interviewDateTime = moment(`${interview.interviewDate} ${interview.interviewTime}`, "MMMM Do YYYY hh:mm A");
+  const currentTime = moment();
+
+  // Calculate the difference in minutes
+  const timeDifference = currentTime.diff(interviewDateTime, "minutes");
+
+  // Allow access only if it's within 1 hour (60 minutes) after the scheduled time
+  if (timeDifference < 0) {
+    return next(new ErrorHandler("You can only join the meeting after the scheduled time.", 403));
+  }
+  if (timeDifference > 60) {
+    return next(new ErrorHandler("The video call session has expired.", 403));
+  }
+
   res.status(200).json({
     success: true,
     roomId: interview.videoCallRoomId,
   });
 });
+
