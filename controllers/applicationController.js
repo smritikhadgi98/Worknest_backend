@@ -23,7 +23,7 @@ export const postApplication = catchAsyncErrors(async (req, res, next) => {
 
   const { resume, coverLetter } = req.files;
 
-  const allowedFormats = ["application/pdf", "image/png", "image/jpeg", "image/webp"];
+  const allowedFormats = ["application/pdf", "image/png", "image/jpeg", "image/webp",  "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
 
   if (!allowedFormats.includes(resume.mimetype) || !allowedFormats.includes(coverLetter.mimetype)) {
     return next(new ErrorHandler("Invalid file type. Only PDF or Image formats are allowed.", 400));
